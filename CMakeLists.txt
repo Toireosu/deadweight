@@ -29,8 +29,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 # target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 
 # (Optional) Specify output directory for the executable
+# Set where the executable is placed
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build/bin"
 )
+
+# Copy assets to the same directory as the executable
+file(COPY ${PROJECT_SOURCE_DIR}/assets
+     DESTINATION ${PROJECT_SOURCE_DIR}/build/bin)
 
 # Note: Assets folder is not included in the build but should be copied or referenced at runtime.
