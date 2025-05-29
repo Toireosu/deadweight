@@ -73,18 +73,17 @@ You control your ship via a command terminal, there is a monitor showing known g
   - `CMakeLists.txt` — Root CMake configuration
   - `README.md`
   - `.gitignore`
-  - **build/** — CMake build output (ignored in Git)
-  - **assets/** — Game assets (loaded at runtime)
-    - **textures/** — Cockpit UI, terminal graphics
-    - **models/** — 3D models, e.g. wireframe planets
-    - **fonts/** — Terminal/cockpit fonts
+  - **assets/** — Game assets 
+    - **textures/**
+    - **models/**
+    - **fonts/**
     - **audio/** — SFX, ambient music
-    - **shaders/** — Optional shaders (e.g. CRT effects)
-    - **scripts/** — Dialogue, events, or job templates
+    - **shaders/** — Shaders
+    - **scripts/** — Dialogue, events, job templates
   - **src/** — C++ source code
     - `main.cpp` — Entry point
-    - **core/** — Core engine parts
-    - **ui/** — Terminal UI, galaxy monitor, cockpit
+    - **core/** — Engine
+    - **ui/** — UI
     - **systems/** — Gameplay systems (MVP-aligned)
     - **data/** — Game data models (components/entities)
     - **utils/** — Helper functions, logging, config loading
