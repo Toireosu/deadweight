@@ -89,14 +89,18 @@ private:
     }
 
 
-public: 
-    Terminal() {
+    void initCommands() {
         _commands["JUMP"] = jump;
         _commands["SCAN"] = scan;
         _commands["TRANSACT"] = transact;
         _commands["COMMS"] = comms;
         _commands["BALANCE"] = balance;
         _commands["HELP"] = jump;
+    }
+
+public:
+    Terminal() {
+        initCommands();
 
         for (int i = 0; i < _inputs.size(); i++)
             _inputs[i] = "";
