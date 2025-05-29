@@ -16,4 +16,6 @@ public:
     virtual void render() {
         DrawTexturePro(*_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale }, {0.0f, 0.0f}, 0.0f, WHITE);
     }
+
+    Texture* getTexture() { return _texture; }
 };
