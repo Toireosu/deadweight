@@ -11,6 +11,8 @@ file(GLOB_RECURSE SOURCES
     "${PROJECT_SOURCE_DIR}/src/*.cpp"
 )
 
+find_package(raylib REQUIRED)
+
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -20,10 +22,7 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/src
 )
 
-# (Optional) If you use SDL2 or other libs, link them here
-# find_package(SDL2 REQUIRED)
-# target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # (Optional) Add compile definitions or flags
 # target_compile_definitions(${PROJECT_NAME} PRIVATE SOME_DEFINE)
