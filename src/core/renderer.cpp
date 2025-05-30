@@ -8,11 +8,23 @@ Camera* Renderer::_camera = nullptr;
 int Renderer::_width; 
 int  Renderer::_height;
 RenderTexture  Renderer::_renderTexture;
+float Renderer::_ratio = 1.0f;
+Vector2 Renderer::_pos;
 
 void Renderer::init(int width, int height) {
     _width = width;
     _height = height;
     _renderTexture = LoadRenderTexture(width, height);
+}
+
+void Renderer::calculateRatio(int width, int height) {
+    _ratio = 1.0f * width / _width;
+    if (_height * _ratio > height) {
+        _ratio = 1.0f * height / _height;
+    }
+
+    _pos.x = (width - _width * _ratio) / 2.0f;
+    _pos.y = (height - _height * _ratio) / 2.0f;
 }
 
 void Renderer::render(RenderStack& stack) {
@@ -35,7 +47,7 @@ void Renderer::render(RenderStack& stack) {
 
         BeginDrawing();
 
-        DrawTexturePro(_renderTexture.texture, {0, 0, 1.0f * _width, -1.0f * _height}, {0, 0, 2.0f * _width, 2.0f * _height}, {0, 0}, 0.0f, WHITE);
+        DrawTexturePro(_renderTexture.texture, {0, 0, 1.0f * _width, -1.0f * _height}, {_pos.x, _pos.y, _ratio * _width, _ratio * _height}, {0, 0}, 0.0f, WHITE);
 
         EndDrawing();
 }

@@ -9,9 +9,12 @@
 
 App::App() {
     // Respect settings
-    InitWindow(1200, 900, "Deadweight");
-    // Init renderer if needed
-    Renderer::init(640, 400);
+    InitWindow(1600, 900, "Deadweight");
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
+
+    // Init renderer 
+    Renderer::init(640, 360);
+    Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
 }
 
 void App::run() {
@@ -33,6 +36,9 @@ void App::run() {
     scene->spawn(new RenderableWrapperUI(ui));
 
     while(!WindowShouldClose()) {
+        if (IsWindowResized())
+            Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
+
         SceneHandler::getCurrent()->updateAll();
 
         Renderer::render(*SceneHandler::getCurrent()->getRenderStack());
