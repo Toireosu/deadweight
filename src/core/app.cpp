@@ -6,6 +6,7 @@
 #include "core/scene.hpp"
 #include "core/scene_handler.hpp"
 #include "core/renderable_wrapper.hpp"
+#include "ui/terminal_view.hpp"
 
 App::App() {
     // Respect settings
@@ -31,9 +32,12 @@ void App::run() {
 
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
-    scene->spawn(new RenderableWrapper(&r2d));
-    scene->spawn(new RenderableWrapper(&r3d));
-    scene->spawn(new RenderableWrapperUI(ui));
+    // scene->spawn(new RenderableWrapper(&r2d));
+    // scene->spawn(new RenderableWrapper(&r3d));
+    // scene->spawn(new RenderableWrapperUI(ui));
+
+    auto view = new TerminalView(640, 360);
+    scene->spawn(view);
 
     while(!WindowShouldClose()) {
         if (IsWindowResized())

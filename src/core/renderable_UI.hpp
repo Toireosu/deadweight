@@ -4,13 +4,17 @@
 #include <raymath.h>
 
 class RenderableUI : public RenderableBase {
-private:
+protected:
     Texture* _texture;
     Rectangle _textureRect;
 public:
     RenderableUI(Texture* texture) {
         _texture = texture;
         _textureRect = {0, 0, 1.0f * _texture->width, 1.0f * _texture->height };
+    }
+
+    RenderableUI() {
+        _texture = nullptr;
     }
 
     virtual void render() {

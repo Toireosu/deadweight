@@ -2,8 +2,8 @@
 
 #include <list>
 
-#include "core/render_stack.hpp"
 class Updatable;
+#include "core/render_stack.hpp"
 class Scene {
 private:
     std::list<Updatable*> _updatables;
