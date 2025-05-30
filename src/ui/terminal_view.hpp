@@ -10,6 +10,8 @@
 #include <rlgl.h>
 #include <cctype>
 
+#include "core/loaders.hpp"
+
 class Terminal;
 class TerminalView : public RenderableUI, public Updatable {
 private:
@@ -36,7 +38,7 @@ private:
 
 public:
     TerminalView(Terminal* terminal, int width, int height) : RenderableUI() {
-        Texture tileTexture = LoadTexture("assets/textures/terminal.png");
+        Texture& tileTexture = *Loaders::Texture.get("assets/textures/terminal.png");
         _preRenderTexture = LoadRenderTexture(width, height);
         
         BeginTextureMode(_preRenderTexture);

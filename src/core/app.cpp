@@ -7,6 +7,7 @@
 #include "core/scene_handler.hpp"
 #include "core/renderable_wrapper.hpp"
 #include "ui/terminal_view.hpp"
+#include "core/loaders.hpp"
 
 App::App() {
     // Respect settings
@@ -19,16 +20,11 @@ App::App() {
 }
 
 void App::run() {
-    Texture texture = LoadTexture("assets/textures/gullbert.png");
-    Renderable2D r2d(&texture);
-    r2d.setPosition({ -5.0f, 0.0f, 0.0f });
     Model model = LoadModelFromMesh(GenMeshSphere(1.0f, 8, 8));
     Renderable3D r3d(&model);
     
     Camera c3d = { { 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 45.0f, 0 };
     Renderer::setCamera(&c3d);
-
-    auto ui = new RenderableUI(&texture);
 
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
