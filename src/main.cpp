@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include "systems/terminal.hpp"
 #include "core/app.hpp"
 
 // Should start a bunch off process

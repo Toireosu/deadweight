@@ -36,7 +36,10 @@ void App::run() {
     // scene->spawn(new RenderableWrapper(&r3d));
     // scene->spawn(new RenderableWrapperUI(ui));
 
-    auto view = new TerminalView(640, 360);
+    auto terminal = new Terminal();
+    scene->spawn(terminal);
+
+    auto view = new TerminalView(terminal, 640, 360);
     scene->spawn(view);
 
     while(!WindowShouldClose()) {
@@ -44,6 +47,8 @@ void App::run() {
             Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
 
         SceneHandler::getCurrent()->updateAll();
+
+        view->takeInput();
 
         Renderer::render(*SceneHandler::getCurrent()->getRenderStack());
     }

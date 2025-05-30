@@ -8,6 +8,8 @@
 #include <exception>
 #include "utils/string_utils.hpp"
 
+#include "core/updatable.hpp"
+
 typedef std::function<std::string(std::vector<std::string>)> TerminalCommandPointer;
 
 class IncorrectTerminalInputError : public std::runtime_error {
@@ -27,13 +29,14 @@ public:
     }
 };
 
-class Terminal {
+class Terminal : public Updatable {
 private:
     // Contains current input at position 0 and the last 9 inputs
     std::array<std::string, 10> _inputs;
     std::map<std::string, TerminalCommandPointer> _commands;
     std::string _output;
     std::string _greetingMessage = "TTerminal Quatro Version 4.12";
+    bool _wasError = false;
     
     // Moves current input as first input in _inputs list
     void addToInputs(std::string input) {
@@ -95,7 +98,7 @@ private:
         _commands["TRANSACT"] = transact;
         _commands["COMMS"] = comms;
         _commands["BALANCE"] = balance;
-        _commands["HELP"] = jump;
+        _commands["HELP"] = help;
     }
 
 public:
@@ -107,6 +110,9 @@ public:
     } 
 
     void handleInput(std::string input) {
+        if (input.empty())
+            return;
+
         addToInputs(input);
         try {
             std::vector<std::string> tokens;
@@ -119,6 +125,7 @@ public:
     
             auto function = getCommandFunction(tokens.front());
             _output = function(std::vector<std::string>(tokens.begin() + 1, tokens.end()));
+            _wasError = false;
         }
         catch (IncorrectTerminalInputError error) {
             std::stringstream ss;
@@ -126,10 +133,12 @@ public:
             ss << ": ";
             ss << input;
             _output = ss.str(); 
+            _wasError = true;
         }
     }
 
     std::string getGreetingMessage() { return _greetingMessage; }
     std::string getOutput() { return _output; }
     std::string getInput(unsigned int index) { return (index >= _inputs.size()) ? "" : _inputs[index]; }
+    bool getWasError() { return _wasError; }
 };
