@@ -1,11 +1,13 @@
 ## Deadweight
-You are a lone space traveler traversing the vast void, passing from spaceport to spaceport looking for freelance work. The main game takes place in the cockpit of the spaceship and revolves around the politics of the different guilds, empires and republics. RPG with 80s retro futuristic aesthetic. 
+You are a lone space traveler traversing the vast void, passing from spaceport to spaceport looking for freelance work. The game takes place entirely from the cockpit of your ship, where you navigate the shifting politics of rival guilds, empires, and republics. Deadweight is a narrative-driven RPG set in a gritty, 1980s-inspired retro-futuristic universe.
 
 ### Mechanics
-You control your ship via a command terminal, there is a monitor showing known galaxies, stars and planets as well as who controls them. There is a display showing how much you can haul and how full your storage currently is. On different planets, asteroids and such you will be able to hunt for jobs to do. You will have to make sure that you are transporting goods that are legal in the different territories you are traversing or make sure you don't get caught with anything illegal. You will build relationships and reputation, a bad relationship with a certain state will make you wanted in their territory. At the beginning of the game you will be able to choose which state your ship is registered under giving you certain bonuses. The politics are static as this game should take place during a very short time i.e. real spent time is in-game time. You control the character via the mouse in the cockpit.
+You control your ship entirely from the cockpit using a command terminal. A galactic monitor displays known systems, planets, and their controlling factions. A separate interface shows your cargo capacity and current loadout. As you travel between planets, asteroids, and outposts, you can take on various jobs—legal or otherwise.
+You'll need to manage what you carry carefully, as different territories have different laws. Transporting contraband can be lucrative, but getting caught has consequences. Your actions affect your standing with each faction; poor relations can make you a wanted criminal in hostile space.
+At the start of the game, you choose a home state for your ship, which grants unique perks and shapes how you're treated across the galaxy. The political landscape is static, as the game unfolds over a short, continuous stretch of real-time.
 
 ### Art
-80s retro futuristic aesthetic inspired by works such as Blade Runner and Alien. Mixed graphics using both 2D pixel art and early 00's 3D. 3D will be used for animating when traveling, wireframe for showing cargo and the planets on the galaxy monitor. 2D will be used for the terminal, NPCs and the interior of the cockpit. 
+The game features a retro-futuristic aesthetic inspired by 1980s sci-fi classics like Blade Runner and Alien. Visually, it combines 2D pixel art with early 2000s-style low-poly 3D. Pixel art is used for the cockpit interior, terminal interface, and NPCs, while 3D elements are used for travel animations, cargo visualization, and wireframe representations of planets and star systems on the galactic monitor.
 
 ### Influences
 #### Film
