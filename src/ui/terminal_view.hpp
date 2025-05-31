@@ -22,6 +22,8 @@ private:
     float _lineHeight = 18;
     Vector2 _screenBounds = { 32, 32 };
 
+    Sound* _inputSound;
+
     std::stringstream _inputStream;
 
     Color _terminalColor = GREEN;
@@ -42,7 +44,8 @@ private:
             std::isalpha(c) ||
             c == '_' ||
             c == '-' ||
-            c == '.';
+            c == '.' ||
+            c == ' ';
     }
 
 public:
@@ -71,6 +74,7 @@ public:
         _textureRect = { 0, 0, 1.0f * width, -1.0f * height };
     
         _font = LoadFontEx("assets\\fonts\\consola.ttf", 100, nullptr, 0);
+        _inputSound = Loaders::Sound.get("assets/audio/sounds/dig_click.wav");
         _terminal = terminal; 
     }
 
@@ -79,9 +83,19 @@ public:
     }
 
     void takeInput() {
-        int key = GetKeyPressed();
 
         std::string str = _inputStream.str();
+        if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressedRepeat(KEY_BACKSPACE)) {
+            if (!str.empty()) {
+                _inputStream.str("");
+                _inputStream.clear();
+                _inputStream << str.erase(str.size() - 1);
+            }
+
+            return;
+        }
+
+        int key = GetKeyPressed();
         switch (key) {
             case KEY_ENTER:
                 if (str.empty())
@@ -90,16 +104,6 @@ public:
                 _inputStream.str("");
                 _inputStream.clear();
             return;
-            case KEY_BACKSPACE:
-                if (!str.empty()) {
-                    _inputStream.str("");
-                    _inputStream.clear();
-                    _inputStream << str.erase(str.size() - 1);
-                }
-            return;
-            case KEY_SPACE:
-                _inputStream << ' ';
-            return;
         }
 
         char c = GetCharPressed();
@@ -107,6 +111,7 @@ public:
             return;
 
         _inputStream << c;
+        PlaySound(*_inputSound);
     }
 
     void render() override {

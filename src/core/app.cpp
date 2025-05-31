@@ -17,6 +17,9 @@ App::App() {
     // Init renderer 
     Renderer::init(640, 360);
     Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
+
+    // Init audio device
+    InitAudioDevice();
 }
 
 void App::run() {
