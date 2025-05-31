@@ -71,7 +71,7 @@ The game features a retro-futuristic aesthetic inspired by 1980s sci-fi classics
 | Stretch goals          | Character select, bounty system, lore integration     |
 
 ### Project Structure
-- **Deadweight/**
+- **deadweight/**
   - `CMakeLists.txt` — Root CMake configuration
   - `README.md`
   - `.gitignore`
