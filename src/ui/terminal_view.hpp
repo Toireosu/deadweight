@@ -36,6 +36,15 @@ private:
         _lineIndex++;
     }
 
+    bool isValidCharIn(char c) {
+        return  
+            std::isdigit(c) ||
+            std::isalpha(c) ||
+            c == '_' ||
+            c == '-' ||
+            c == '.';
+    }
+
 public:
     TerminalView(Terminal* terminal, int width, int height) : RenderableUI() {
         Texture& tileTexture = *Loaders::Texture.get("assets/textures/terminal.png");
@@ -94,7 +103,7 @@ public:
         }
 
         char c = GetCharPressed();
-        if (!std::isalpha(c))
+        if (!isValidCharIn(c))
             return;
 
         _inputStream << c;
