@@ -34,8 +34,6 @@ void Scene::destroy(Updatable* updatable) {
 }
 
 void Scene::updateAll() {
-    float delta = GetFrameTime();
-
     for (auto updatable : std::list(_updatables))
-        updatable->update(delta);
+        updatable->update();
 }

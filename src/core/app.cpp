@@ -5,7 +5,6 @@
 #include "core/render_stack.hpp"
 #include "core/scene.hpp"
 #include "core/scene_handler.hpp"
-#include "core/renderable_wrapper.hpp"
 #include "ui/terminal_view.hpp"
 #include "core/loaders.hpp"
 
@@ -31,9 +30,6 @@ void App::run() {
 
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
-    // scene->spawn(new RenderableWrapper(&r2d));
-    // scene->spawn(new RenderableWrapper(&r3d));
-    // scene->spawn(new RenderableWrapperUI(ui));
 
     auto terminal = new Terminal();
     scene->spawn(terminal);

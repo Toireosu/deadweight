@@ -3,5 +3,5 @@
 class Updatable {
 private:
 public:
-    virtual void update(float delta) { }
+    virtual void update() { }
 };

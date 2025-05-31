@@ -14,6 +14,14 @@ namespace StringUtilites {
         return upper;
     }
 
+    std::string lowerCase(std::string input) {
+        std::string lower = input;
+        std::transform(lower.begin(), lower.end(), lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+
+        return lower;
+    }
+
     std::vector<std::string> split(std::string input, char delimiter) {
         auto segs = std::vector<std::string>(10);
         std::stringstream stringStream(input);

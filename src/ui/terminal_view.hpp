@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/renderable_UI.hpp"
-#include "core/updatable.hpp"
 
 #include "systems/terminal.hpp"
 #include <sstream>
@@ -9,34 +8,40 @@
 #include <raymath.h>
 #include <rlgl.h>
 #include <cctype>
+#include <cmath>
 
 #include "core/loaders.hpp"
 
 class Terminal;
-class TerminalView : public RenderableUI, public Updatable {
+class TerminalView : public RenderableUI {
 private:
+    // Rendering
     RenderTexture _preRenderTexture;
-    Font _font;
+    Font* _font;
     Terminal* _terminal;
     int _lineIndex = 0;
     float _lineHeight = 18;
     Vector2 _screenBounds = { 32, 32 };
-
-    Sound* _inputSound;
-
-    std::stringstream _inputStream;
-
     Color _terminalColor = GREEN;
     Color _terminalError = RED;
 
-    void clear() {
+    void clearTerminal() {
         _lineIndex = 0;
     }
 
     void writeLine(std::string line, bool error) {
-        DrawTextEx(_font, line.c_str(), Vector2Add(_screenBounds, {0, _lineHeight * _lineIndex }), 15, 4, error ? _terminalError : _terminalColor);
+        DrawTextEx(*_font, line.c_str(), Vector2Add(_screenBounds, {0, _lineHeight * _lineIndex }), 15, 4, error ? _terminalError : _terminalColor);
         _lineIndex++;
     }
+
+    // Sounds
+    Sound* _inputSound;
+    Sound* _acceptSound;
+    
+    // Input
+
+    int _historyIndex = -1;
+    std::stringstream _inputStream;
 
     bool isValidCharIn(char c) {
         return  
@@ -45,7 +50,25 @@ private:
             c == '_' ||
             c == '-' ||
             c == '.' ||
+            c == ',' ||
             c == ' ';
+    }
+
+    void resetHistory() {
+        _historyIndex = -1;
+    }
+
+    void clearInput() {
+        _inputStream.str("");
+        _inputStream.clear();
+    }
+
+    template <typename T>
+    void appendInput(T addition, bool clear) {
+        if (clear)
+            clearInput();
+        _inputStream << addition;
+        PlaySound(*_inputSound);
     }
 
 public:
@@ -73,8 +96,9 @@ public:
         _texture = &_preRenderTexture.texture;
         _textureRect = { 0, 0, 1.0f * width, -1.0f * height };
     
-        _font = LoadFontEx("assets\\fonts\\consola.ttf", 100, nullptr, 0);
+        _font = Loaders::Font.get("assets/fonts/consola.ttf");
         _inputSound = Loaders::Sound.get("assets/audio/sounds/dig_click.wav");
+        _acceptSound = Loaders::Sound.get("assets/audio/sounds/dig_accept.wav");
         _terminal = terminal; 
     }
 
@@ -87,22 +111,31 @@ public:
         std::string str = _inputStream.str();
         if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressedRepeat(KEY_BACKSPACE)) {
             if (!str.empty()) {
-                _inputStream.str("");
-                _inputStream.clear();
-                _inputStream << str.erase(str.size() - 1);
+                appendInput(str.erase(str.size() - 1), true);
+                resetHistory();
             }
 
             return;
         }
 
-        int key = GetKeyPressed();
-        switch (key) {
-            case KEY_ENTER:
-                if (str.empty())
-                    return;
-                _terminal->handleInput(str);
-                _inputStream.str("");
-                _inputStream.clear();
+        if (IsKeyPressed(KEY_ENTER)) {
+                if (!str.empty()) {
+                    _terminal->handleInput(str);
+                    clearInput();
+                    resetHistory();
+                    PlaySound(*_acceptSound);
+                }
+            return;
+        }
+
+        if (IsKeyPressed(KEY_UP)) {
+            appendInput(_terminal->getInput(++_historyIndex), true);
+            return;
+        }
+
+        if (IsKeyPressed(KEY_DOWN)) {
+            _historyIndex = fmax(--_historyIndex, -1);
+            appendInput(_terminal->getInput(_historyIndex), true);
             return;
         }
 
@@ -110,18 +143,23 @@ public:
         if (!isValidCharIn(c))
             return;
 
-        _inputStream << c;
-        PlaySound(*_inputSound);
+        appendInput(c, false);
     }
 
     void render() override {
         RenderableUI::render();
 
-        clear();
+        clearTerminal();
 
         writeLine(_terminal->getGreetingMessage(), false);
-        if (!_terminal->getOutput().empty())
-            writeLine(_terminal->getOutput(), _terminal->getWasError());
-        writeLine((_inputStream.str() + "_"), false);
+        if (!_terminal->getOutput().empty()) {
+            for (auto line : _terminal->getOutput())
+            writeLine(line, _terminal->getWasError());
+        }
+
+        if (int(GetTime() * 2) % 2)
+            writeLine((_inputStream.str() + "_"), false);
+        else
+            writeLine((_inputStream.str()), false);
     }
 };
