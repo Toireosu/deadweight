@@ -89,3 +89,13 @@ The game features a retro-futuristic aesthetic inspired by 1980s sci-fi classics
     - **systems/** — Gameplay systems (MVP-aligned)
     - **data/** — Game data models (components/entities)
     - **utils/** — Helper functions, logging, config loading
+
+
+### World Names
+- Perun
+- Veles
+- Svarog
+- Zorya
+- Sarakiel
+- Ramiel - star
+- Phanuel

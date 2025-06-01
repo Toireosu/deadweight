@@ -4,10 +4,10 @@
 
 class Factions {
 public:
-    const static Faction* Confederacy;
-    const static Faction* Union;
-    const static Faction* Syndicates;
-    const static Faction* Disciples;
-    const static Faction* Unaffiliated;
-    const static Faction* Disputed; 
+    static Faction* Confederacy;
+    static Faction* Union;
+    static Faction* Syndicates;
+    static Faction* Disciples;
+    static Faction* Unaffiliated;
+    static Faction* Disputed; 
 };

@@ -9,8 +9,10 @@
 #include "utils/string_utils.hpp"
 
 #include "core/updatable.hpp"
+#include "data/world_map.hpp"
 
-typedef std::function<std::list<std::string>(std::vector<std::string>)> TerminalCommandPointer;
+class Terminal;
+typedef std::function<std::list<std::string>(const Terminal&, std::vector<std::string>)> TerminalCommandPointer;
 
 class IncorrectTerminalInputError : public std::runtime_error {
 private:
@@ -61,59 +63,7 @@ private:
         throw IncorrectTerminalInputError(std::list<std::string> { "Unknown command: ", StringUtilites::lowerCase(signature) });
     }
 
-    static std::list<std::string> jump(std::vector<std::string> parameters) {
-        if (parameters.empty())
-            throw IncorrectTerminalInputError("Missing parameters");
-
-        return std::list<std::string> { (std::stringstream() << "Setting course to " << parameters[0]).str() };
-    }    
-
-    static std::list<std::string> scan(std::vector<std::string> parameters) {
-        if (parameters.empty())
-            throw IncorrectTerminalInputError("Missing parameters");
-
-        return std::list<std::string> { (std::stringstream() << "The weather on " << parameters[0] << " is cloudy").str() };
-    }    
-
-    static std::list<std::string> transact(std::vector<std::string> parameters) {
-        if (parameters.empty())
-            throw IncorrectTerminalInputError("Missing parameters");
-
-        return std::list<std::string> { (std::stringstream() << "Accepted job " << parameters[0]).str() };
-    }
-
-    static std::list<std::string> comms(std::vector<std::string> parameters) {
-        if (parameters.empty())
-            throw IncorrectTerminalInputError("Missing parameters");
-
-        return std::list<std::string> { "There is no one there..." };
-    }
-
-    static std::list<std::string> balance(std::vector<std::string> parameters) {
-        return std::list<std::string> { (std::stringstream() << "You have 0.000 VBucks...").str() };
-    }
-
-    static std::list<std::string> help(std::vector<std::string> parameters) {
-        static std::list<std::string> _commandList {
-            "= List of Commands =",
-            "- jump [world] [x, y]",
-            "- scan [world] [x, y]",
-            "- transact [job_name] [job_index]"
-        };
-        
-        return _commandList;
-    }
-
-
-    void initCommands() {
-        _commands["JUMP"] = jump;
-        _commands["SCAN"] = scan;
-        _commands["TRANSACT"] = transact;
-        _commands["COMMS"] = comms;
-        _commands["BALANCE"] = balance;
-        _commands["HELP"] = help;
-    }
-
+    void initCommands();
 public:
     Terminal() {
         initCommands();
@@ -137,7 +87,7 @@ public:
                 tokens.push_back(token);
     
             auto function = getCommandFunction(tokens.front());
-            _output = function(std::vector<std::string>(tokens.begin() + 1, tokens.end()));
+            _output = function(*this, std::vector<std::string>(tokens.begin() + 1, tokens.end()));
             _wasError = false;
         }
         catch (IncorrectTerminalInputError error) {

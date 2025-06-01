@@ -5,8 +5,9 @@
 #include <string>
 #include <sstream>
 
-namespace StringUtilites {
-    std::string upperCase(std::string input) {
+class StringUtilites {
+public:
+    static std::string upperCase(std::string input) {
         std::string upper = input;
         std::transform(upper.begin(), upper.end(), upper.begin(),
                        [](unsigned char c) { return std::toupper(c); });
@@ -14,7 +15,7 @@ namespace StringUtilites {
         return upper;
     }
 
-    std::string lowerCase(std::string input) {
+    static std::string lowerCase(std::string input) {
         std::string lower = input;
         std::transform(lower.begin(), lower.end(), lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -22,7 +23,7 @@ namespace StringUtilites {
         return lower;
     }
 
-    std::vector<std::string> split(std::string input, char delimiter) {
+    static std::vector<std::string> split(std::string input, char delimiter) {
         auto segs = std::vector<std::string>(10);
         std::stringstream stringStream(input);
         std::string seg;
@@ -30,5 +31,9 @@ namespace StringUtilites {
             segs.push_back(seg);
 
         return segs;
+    }
+
+    static bool equalsCaseInsensitve(std::string s0, std::string s1) {
+        return upperCase(s0) == upperCase(s1);
     }
 };

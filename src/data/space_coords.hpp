@@ -10,6 +10,12 @@ public:
         _y = y;
     }
 
+    SpaceCoords() {
+        _x = 0;
+        _y = 0;
+    }
+
+
     unsigned short getX() { return _x; }
     unsigned short getY() { return _y; }
 

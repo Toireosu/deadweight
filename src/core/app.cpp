@@ -7,6 +7,7 @@
 #include "core/scene_handler.hpp"
 #include "ui/terminal_view.hpp"
 #include "core/loaders.hpp"
+#include "data/world_map.hpp"
 
 App::App() {
     // Respect settings
@@ -19,6 +20,9 @@ App::App() {
 
     // Init audio device
     InitAudioDevice();
+
+    // Init world map
+    WorldMap::init();
 }
 
 void App::run() {
