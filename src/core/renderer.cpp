@@ -3,6 +3,8 @@
 #include "core/renderable_base.hpp"
 #include "core/renderable_UI.hpp"
 
+#include <rlgl.h>
+
 Camera* Renderer::_camera = nullptr;
 
 int Renderer::_width; 
@@ -39,6 +41,9 @@ void Renderer::render(RenderStack& stack) {
             renderable->render();
 
         EndMode3D();
+
+        // Hack to allow 3D models in UI
+        rlSetMatrixModelview(MatrixOrtho(-1, 1, -1, 1, 0.1, 100));
 
         for (auto uiElement : stack.getOrthographic())
             uiElement->render();

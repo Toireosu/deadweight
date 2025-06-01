@@ -91,7 +91,6 @@ public:
             }
         }
         EndTextureMode();
-        UnloadTexture(tileTexture);
         
         _texture = &_preRenderTexture.texture;
         _textureRect = { 0, 0, 1.0f * width, -1.0f * height };

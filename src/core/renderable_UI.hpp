@@ -7,6 +7,10 @@ class RenderableUI : public RenderableBase {
 protected:
     Texture* _texture;
     Rectangle _textureRect;
+protected:
+    void renderOne(Texture* texture, Rectangle srcRect, Rectangle dstRect) {
+        DrawTexturePro(*texture, srcRect, dstRect, {0.0f, 0.0f}, 0.0f, WHITE);
+    }
 public:
     RenderableUI(Texture* texture) {
         _texture = texture;
@@ -17,8 +21,10 @@ public:
         _texture = nullptr;
     }
 
-    virtual void render() {
-        DrawTexturePro(*_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale }, {0.0f, 0.0f}, 0.0f, WHITE);
+
+    virtual void render() override {
+        // DrawTexturePro(*_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale }, {0.0f, 0.0f}, 0.0f, WHITE);
+        renderOne(_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale });
     }
 
     Texture* getTexture() { return _texture; }

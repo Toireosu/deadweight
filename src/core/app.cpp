@@ -8,6 +8,7 @@
 #include "ui/terminal_view.hpp"
 #include "core/loaders.hpp"
 #include "data/world_map.hpp"
+#include "ui/star_map_view.hpp"
 
 App::App() {
     // Respect settings
@@ -35,11 +36,14 @@ void App::run() {
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
 
-    auto terminal = new Terminal();
-    scene->spawn(terminal);
+    // auto terminal = new Terminal();
+    // scene->spawn(terminal);
 
-    auto view = new TerminalView(terminal, 640, 360);
-    scene->spawn(view);
+    // auto view = new TerminalView(terminal, 640, 360);
+    // scene->spawn(view);
+
+    auto starMapView = new StarMapView(360);
+    scene->spawn(starMapView);
 
     while(!WindowShouldClose()) {
         if (IsWindowResized())
@@ -47,7 +51,7 @@ void App::run() {
 
         SceneHandler::getCurrent()->updateAll();
 
-        view->takeInput();
+        // view->takeInput();
 
         Renderer::render(*SceneHandler::getCurrent()->getRenderStack());
     }
