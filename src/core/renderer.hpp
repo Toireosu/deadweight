@@ -17,4 +17,7 @@ public:
     static Camera* getCamera() { return _camera; }
     static void setCamera(Camera* camera) { _camera = camera; }
     static void render(RenderStack&);
+
+    static float getRatio() { return _ratio; }
+    static Vector2 getCanvasPosition() { return _pos; }
 };

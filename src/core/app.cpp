@@ -9,6 +9,8 @@
 #include "core/loaders.hpp"
 #include "data/world_map.hpp"
 #include "ui/star_map_view.hpp"
+#include <sstream>
+#include <iostream>
 
 App::App() {
     // Respect settings
@@ -50,6 +52,10 @@ void App::run() {
             Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
 
         SceneHandler::getCurrent()->updateAll();
+
+        Vector2 mousePos = Vector2Scale(Vector2Subtract(GetMousePosition(), Renderer::getCanvasPosition()), 1.0f / Renderer::getRatio());
+        
+        starMapView->handleMouse(mousePos, false, false);
 
         // view->takeInput();
 

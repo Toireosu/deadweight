@@ -18,6 +18,7 @@ public:
     Vector2 getTextPosition() { return _textPosition; }
     Vector2 getLabelSize() { return _labelSize; }
     Vector2 getLabelAnchorPoint() { return _labelAnchorPoint; }
+    float getRadius() { return ((Planet*)_world)->getDiameter() / 2.0f; }
     StarMapWorld() { }
     StarMapWorld(World* world, Vector2 position, Vector2 labelPosition, Vector2 labelSize, Vector2 textPosition, Vector2 labelAnchorPoint) { 
         _world = world; 
@@ -32,11 +33,13 @@ public:
 class StarMapView : public RenderableUI {
 private:
     std::vector<StarMapWorld> _worlds; 
+    World* _hoveredWorld;
     RenderTexture _preRenderTexture;
     Font* _font;
     const float _worldLabelspacing = 0.8f;
     const float _worldLabelFontSize = 15;
     const float _labelMargin = 1;
+    int _sideSize = 0;
 public:
     StarMapView(int height) {
         _font = Loaders::Font.get("assets/fonts/VT323-Regular.ttf");
@@ -112,10 +115,25 @@ public:
         _texture = new Texture();
         *_texture = _preRenderTexture.texture;
         _textureRect = { 0, 0, 1.0f * height, -1.0f * height };
+
+        _sideSize = height;
     }
     
     ~StarMapView() {
         UnloadRenderTexture(_preRenderTexture);
+    }
+
+    virtual bool handleMouse(Vector2 coords, bool left, bool right) {
+        for (auto world : _worlds) {
+            if (Vector2Distance(coords, world.getPosition()) < world.getRadius()) {
+                _hoveredWorld = world.getWorld();
+                return true;
+            }
+        }
+        
+        _hoveredWorld = nullptr;
+
+        return false;
     }
 
     virtual void render() override {
@@ -127,18 +145,31 @@ public:
         for (auto world : _worlds) {
             Planet* planet = dynamic_cast<Planet*>(world.getWorld());
 
+            bool isHovered = (world.getWorld() == _hoveredWorld);
+
+            // Rendering planet
             float radius = planet->getDiameter() / 2.0f;
             Vector2 position = world.getPosition(); 
             DrawSphere({ position.x, position.y + radius , 0}, radius, BLACK);
-            DrawSphere({ position.x, position.y, 0}, radius, planet->getColor());
+            DrawSphere({ position.x, position.y, 0}, radius, (isHovered) ? WHITE : planet->getColor());
 
+            // Rendering arrow
             auto labelAnchor = world.getLabelAnchorPoint();
             DrawLine(labelAnchor.x, labelAnchor.y, position.x, position.y, GREEN);
 
+            // Rendering label
             auto labelPosition = world.getLabelPosition();
             auto labelSize = world.getLabelSize();
-            DrawRectangle(labelPosition.x, labelPosition.y, labelSize.x, labelSize.y, GRAY);
-            DrawTextEx(*_font, planet->getName().c_str(), world.getTextPosition(), _worldLabelFontSize, _worldLabelspacing, GREEN);
+            DrawRectangle(labelPosition.x, labelPosition.y, labelSize.x, labelSize.y, isHovered ? WHITE : GRAY);
+            DrawTextEx(*_font, planet->getName().c_str(), world.getTextPosition(), _worldLabelFontSize, _worldLabelspacing, isHovered ? BLACK : GREEN);
+        }
+
+        if (_hoveredWorld != nullptr) {
+            int tabSize = 100;
+            float yDiff = 30;
+            DrawTextEx(*_font, _hoveredWorld->getName().c_str(), { 1.0f * _sideSize, 0 }, _worldLabelFontSize, _worldLabelspacing, GREEN);
+            DrawTextEx(*_font, "FACTION: ", { 1.0f * _sideSize, yDiff }, _worldLabelFontSize, _worldLabelspacing, GREEN);
+            DrawTextEx(*_font, _hoveredWorld->getFaction()->getAcronym().c_str(), { 1.0f * _sideSize + tabSize, yDiff }, _worldLabelFontSize, _worldLabelspacing, GREEN);
         }
     }
 };
