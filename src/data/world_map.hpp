@@ -20,7 +20,7 @@ public:
     static void init() {
         _internal.push_back(new Planet("Peronie", Factions::Union, SpaceCoords(100, 120), "Capital of the Union.", 12000000000U, 23.0f, BLUE));
         _internal.push_back(new Planet("Valesh", Factions::Confederacy, SpaceCoords(800, 600), "Home planet of the Confederacy.", 700000000U, 46.0f, RED));
-        _internal.push_back(new Planet("Sarakiel", Factions::Syndicates, SpaceCoords(700, 230), "Mining planet.", 8000000U, 17.0f, RED));
+        _internal.push_back(new Planet("Sarakiel", Factions::Syndicates, SpaceCoords(700, 230), "Mining planet.", 8000000U, 17.0f, ORANGE));
     }
 
     static World* getWorldByName(std::string name) {

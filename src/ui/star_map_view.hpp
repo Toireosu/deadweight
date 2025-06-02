@@ -18,6 +18,7 @@ class StarMapView : public RenderableUI {
 private:
     std::vector<StarMapWorld> _worlds; 
     RenderTexture _preRenderTexture;
+    Font* _font;
 public:
     StarMapView(int height) {
         auto worlds = WorldMap::getAll();
@@ -51,6 +52,8 @@ public:
         _texture = new Texture();
         *_texture = _preRenderTexture.texture;
         _textureRect = { 0, 0, 1.0f * height, -1.0f * height };
+        
+        _font = Loaders::Font.get("assets/fonts/VT323-Regular.ttf");
     }
     
     ~StarMapView() {
@@ -66,8 +69,19 @@ public:
         for (auto world : _worlds) {
             Planet* planet = dynamic_cast<Planet*>(world.getWorld());
             float radius = planet->getDiameter() / 2.0f;
-            DrawSphere({ world.getPosition().x, world.getPosition().y + radius , 0}, radius, BLACK);
-            DrawSphere({ world.getPosition().x, world.getPosition().y, 0}, radius, planet->getColor());
+            Vector2 position = world.getPosition(); 
+            DrawSphere({ position.x, position.y + radius , 0}, radius, BLACK);
+            DrawSphere({ position.x, position.y, 0}, radius, planet->getColor());
+            
+            std::string name = planet->getName();
+            const static float spacing = 0.8f;
+            const static float fontSize = 15;
+            
+            Vector2 textSize = MeasureTextEx(*_font, name.c_str(), fontSize, spacing);
+            
+            Vector2 textOffset = { position.x - textSize.x / 2.0f, position.y };
+            DrawRectangle(textOffset.x, textOffset.y, textSize.x, textSize.y, GRAY);
+            DrawTextEx(*_font, name.c_str(), textOffset, fontSize, spacing, GREEN);
         }
     }
 };

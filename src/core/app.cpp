@@ -16,7 +16,7 @@ App::App() {
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     // Init renderer 
-    Renderer::init(640, 360);
+    Renderer::init(854, 480);
     Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
 
     // Init audio device
@@ -36,14 +36,14 @@ void App::run() {
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
 
-    // auto terminal = new Terminal();
-    // scene->spawn(terminal);
+    auto terminal = new Terminal();
+    scene->spawn(terminal);
 
-    // auto view = new TerminalView(terminal, 640, 360);
-    // scene->spawn(view);
+    auto view = new TerminalView(terminal, 640, 480);
+    scene->spawn(view);
 
-    auto starMapView = new StarMapView(360);
-    scene->spawn(starMapView);
+    auto starMapView = new StarMapView(480);
+    // scene->spawn(starMapView);
 
     while(!WindowShouldClose()) {
         if (IsWindowResized())
