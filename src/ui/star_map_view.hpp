@@ -2,6 +2,7 @@
 
 #include "core/renderable_UI.hpp"
 #include "data/world_map.hpp"
+#include "core/loaders.hpp"
 
 class StarMapWorld {
 private:

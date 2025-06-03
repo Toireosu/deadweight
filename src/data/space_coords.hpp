@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cctype>
+#include <stdexcept>
 
 class SpaceCoords {
 protected:

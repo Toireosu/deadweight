@@ -5,9 +5,10 @@
 #include "core/audio_loaders.hpp"
 #include "core/font_loader.hpp"
 
-namespace Loaders {
-    TextureLoader Texture;
-    SoundLoader Sound;
-    MusicLoader Music;
-    FontLoader Font;
-}
+class Loaders {
+public:
+    static inline TextureLoader Texture;
+    static inline SoundLoader Sound;
+    static inline MusicLoader Music;
+    static inline FontLoader Font;
+};

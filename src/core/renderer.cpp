@@ -38,7 +38,7 @@ void Renderer::render(RenderStack& stack) {
         BeginMode3D(*Renderer::getCamera());
         
         for (auto renderable : stack.getPerspective())
-            renderable->render();
+            renderable->renderCall();
 
         EndMode3D();
 
@@ -46,7 +46,7 @@ void Renderer::render(RenderStack& stack) {
         rlSetMatrixModelview(MatrixOrtho(-1, 1, -1, 1, 0.1, 100));
 
         for (auto uiElement : stack.getOrthographic())
-            uiElement->render();
+            uiElement->renderCall();
 
         EndTextureMode();
 
