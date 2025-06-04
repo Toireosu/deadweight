@@ -4,33 +4,7 @@
 #include "data/world_map.hpp"
 #include "core/loaders.hpp"
 #include "data/player_vessel.hpp"
-
-class StarMapWorld {
-private:
-    World* _world;
-    Vector2 _position;
-    Vector2 _labelPosition;
-    Vector2 _labelSize; 
-    Vector2 _textPosition;
-    Vector2 _labelAnchorPoint;
-public:
-    World* getWorld() { return _world; }
-    Vector2 getPosition() { return _position; }
-    Vector2 getLabelPosition() { return _labelPosition; }
-    Vector2 getTextPosition() { return _textPosition; }
-    Vector2 getLabelSize() { return _labelSize; }
-    Vector2 getLabelAnchorPoint() { return _labelAnchorPoint; }
-    float getRadius() { return ((Planet*)_world)->getDiameter() / 2.0f; }
-    StarMapWorld() { }
-    StarMapWorld(World* world, Vector2 position, Vector2 labelPosition, Vector2 labelSize, Vector2 textPosition, Vector2 labelAnchorPoint) { 
-        _world = world; 
-        _position = position; 
-        _labelPosition = labelPosition;
-        _labelSize = labelSize;
-        _textPosition = textPosition;
-        _labelAnchorPoint = labelAnchorPoint;
-    }
-};
+#include "ui/star_map_world.hpp"
 
 class StarMapView : public RenderableUI {
 private:
@@ -47,8 +21,13 @@ private:
     int _height;
 
     Vector2 spaceCoordsToVector(SpaceCoords coords) {
-        return { _height * coords.getX() / SpaceCoords::bounds(), _height * coords.getY() / SpaceCoords::bounds() };
+        float x = _height * coords.getX() / SpaceCoords::bounds();
+        float y = _height * coords.getY() / SpaceCoords::bounds();
+
+        return { x, y };
     }
+
+    struct ColorScheme { Color world, label, text; };
 public:
     StarMapView(int height, PlayerVessel* vessel) {
         _font = Loaders::Font.get("assets/fonts/VT323-Regular.ttf");
@@ -148,6 +127,10 @@ public:
 
         return true;
     }
+    
+    ColorScheme getColorScheme(Color worldColor, bool hovered) {
+        return hovered ? ColorScheme(WHITE, WHITE, BLACK) : ColorScheme(worldColor, GRAY, GREEN);
+    }
 
     virtual void render() override {
         // DrawTexturePro(*_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale }, {0.0f, 0.0f}, 0.0f, WHITE);
@@ -159,22 +142,23 @@ public:
             Planet* planet = dynamic_cast<Planet*>(world.getWorld());
 
             bool isHovered = (world.getWorld() == _hoveredWorld);
+            auto colorScheme = getColorScheme(planet->getColor(), isHovered);
 
             // Rendering planet
             float radius = planet->getDiameter() / 2.0f;
             Vector2 position = world.getPosition(); 
             DrawSphere({ position.x, position.y + radius , 0}, radius, BLACK);
-            DrawSphere({ position.x, position.y, 0}, radius, (isHovered) ? WHITE : planet->getColor());
+            DrawSphere({ position.x, position.y, 0}, radius, colorScheme.world);
 
             // Rendering arrow
             auto labelAnchor = world.getLabelAnchorPoint();
-            DrawLine(labelAnchor.x, labelAnchor.y, position.x, position.y, GREEN);
+            DrawLine(labelAnchor.x, labelAnchor.y, position.x, position.y, colorScheme.text);
 
             // Rendering label
             auto labelPosition = world.getLabelPosition();
             auto labelSize = world.getLabelSize();
-            DrawRectangle(labelPosition.x, labelPosition.y, labelSize.x, labelSize.y, isHovered ? WHITE : GRAY);
-            DrawTextEx(*_font, planet->getName().c_str(), world.getTextPosition(), _worldLabelFontSize, _worldLabelspacing, isHovered ? BLACK : GREEN);
+            DrawRectangle(labelPosition.x, labelPosition.y, labelSize.x, labelSize.y, colorScheme.label);
+            DrawTextEx(*_font, planet->getName().c_str(), world.getTextPosition(), _worldLabelFontSize, _worldLabelspacing, colorScheme.text);
         }
 
         if (_hoveredWorld != nullptr) {

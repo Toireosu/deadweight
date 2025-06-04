@@ -17,6 +17,7 @@ public:
         _coords = coords;
     }
 
+    virtual std::string getBrief() = 0;
     std::string getName() { return _name; };
     Faction* getFaction() { return _faction; }; 
     SpaceCoords getCoords() { return _coords; }

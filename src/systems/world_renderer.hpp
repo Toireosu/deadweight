@@ -8,6 +8,7 @@ class WorldRenderer : public Renderable3D, public PlayerVesselMovedListener {
 private:
     Color _color;
     Vector3 _worldPosition;
+    Texture* _texture;
 public:
     WorldRenderer() : Renderable3D(nullptr) 
     { }
@@ -28,10 +29,13 @@ public:
         _model = new Model(LoadModelFromMesh(GenMeshSphere(size, 16, 16)));
         _color = planet->getColor();
         _worldPosition = { distance, 0, -distance * 3 };
+        _texture = planet->getTexture();
+        _model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *_texture;
     }
 
     void render() override {
-        if (_model)
+        if (_model) {
             DrawModel(*_model, _worldPosition, 1.0f, _color);
+        }
     }
 };
