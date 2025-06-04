@@ -3,6 +3,7 @@
 #include "core/renderable_UI.hpp"
 #include "data/world_map.hpp"
 #include "core/loaders.hpp"
+#include "data/player_vessel.hpp"
 
 class StarMapWorld {
 private:
@@ -41,16 +42,27 @@ private:
     const float _worldLabelFontSize = 15;
     const float _labelMargin = 1;
     int _sideSize = 0;
+    PlayerVessel* _vessel;
+
+    int _height;
+
+    Vector2 spaceCoordsToVector(SpaceCoords coords) {
+        return { _height * coords.getX() / SpaceCoords::bounds(), _height * coords.getY() / SpaceCoords::bounds() };
+    }
 public:
-    StarMapView(int height) {
+    StarMapView(int height, PlayerVessel* vessel) {
         _font = Loaders::Font.get("assets/fonts/VT323-Regular.ttf");
+        _vessel = vessel;
+        _height = height;
 
         auto worlds = WorldMap::getAll();
         _worlds.resize(worlds.size());
         std::transform(worlds.begin(), worlds.end(), _worlds.begin(), 
             [height, this](World* world) { 
-                float x =  height * world->getCoords().getX() / SpaceCoords::bounds();
-                float y =  height * world->getCoords().getY() / SpaceCoords::bounds();
+                Vector2 worldSpace = spaceCoordsToVector(world->getCoords());
+
+                float x = worldSpace.x;
+                float y = worldSpace.y;
 
                 // Temp
                 float worldRadius = ((Planet*)world)->getDiameter() / 2;
@@ -172,5 +184,9 @@ public:
             DrawTextEx(*_font, "FACTION: ", { 1.0f * _sideSize, yDiff }, _worldLabelFontSize, _worldLabelspacing, GREEN);
             DrawTextEx(*_font, _hoveredWorld->getFaction()->getAcronym().c_str(), { 1.0f * _sideSize + tabSize, yDiff }, _worldLabelFontSize, _worldLabelspacing, GREEN);
         }
+
+        Vector2 playerPos = spaceCoordsToVector(_vessel->getCoords());
+
+        DrawRectangle(playerPos.x, playerPos.y, 10, 10, GREEN);
     }
 };

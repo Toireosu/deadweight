@@ -1,0 +1,37 @@
+#pragma once
+
+#include "core/renderable_3D.hpp"
+#include "systems/player_vessel_moved_listener.hpp"
+#include "data/world_map.hpp"
+
+class WorldRenderer : public Renderable3D, public PlayerVesselMovedListener {
+private:
+    Color _color;
+    Vector3 _worldPosition;
+public:
+    WorldRenderer() : Renderable3D(nullptr) 
+    { }
+
+    void onPlayerMoved(SpaceCoords coords) override {
+        delete _model;
+        _model = nullptr;
+        
+        auto world = WorldMap::getWorldByCoords(coords);
+
+        auto planet = dynamic_cast<Planet*>(world);
+
+        if (planet == nullptr)
+            return;
+        
+        float distance = 100.0f;
+        auto size = planet->getDiameter() / 2 * 10.0f;
+        _model = new Model(LoadModelFromMesh(GenMeshSphere(size, 16, 16)));
+        _color = planet->getColor();
+        _worldPosition = { distance, 0, -distance * 3 };
+    }
+
+    void render() override {
+        if (_model)
+            DrawModel(*_model, _worldPosition, 1.0f, _color);
+    }
+};

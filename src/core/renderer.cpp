@@ -2,6 +2,7 @@
 #include "core/render_stack.hpp"
 #include "core/renderable_base.hpp"
 #include "core/renderable_UI.hpp"
+#include <rlgl.h>
 
 #include <rlgl.h>
 
@@ -17,6 +18,7 @@ void Renderer::init(int width, int height) {
     _width = width;
     _height = height;
     _renderTexture = LoadRenderTexture(width, height);
+    rlSetClipPlanes(0.1, 10000.0f);
 }
 
 void Renderer::calculateRatio(int width, int height) {
@@ -33,8 +35,6 @@ void Renderer::render(RenderStack& stack) {
         BeginTextureMode(_renderTexture);
 
         ClearBackground(BLACK);
-
-        
         BeginMode3D(*Renderer::getCamera());
         
         for (auto renderable : stack.getPerspective())

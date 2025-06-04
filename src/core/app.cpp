@@ -10,6 +10,7 @@
 #include "data/world_map.hpp"
 #include "ui/star_map_view.hpp"
 #include "ui/cockpit_view.hpp"
+#include "systems/world_renderer.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -41,11 +42,19 @@ void App::run() {
     Scene* scene = new Scene();
     SceneHandler::switchScene(scene);
 
-    auto terminal = new Terminal();
+    auto playerVessel = new PlayerVessel(SpaceCoords(230, 450));
+
+    auto worldRenderer = new WorldRenderer();
+    playerVessel->addListener(worldRenderer);
+    scene->spawn(worldRenderer);
+
+    playerVessel->hasMovedCoords();
+
+    auto terminal = new Terminal(playerVessel);
     scene->spawn(terminal);
 
     auto view = new TerminalView(terminal, 640, 480);
-    auto starMapView = new StarMapView(480);
+    auto starMapView = new StarMapView(480, playerVessel);
     
     auto cockpitView = new CockpitView(starMapView, view);
     scene->spawn(cockpitView);

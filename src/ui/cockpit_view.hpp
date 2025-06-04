@@ -15,7 +15,7 @@ private:
     Texture* _terminalTexture;
     Texture* _starMapTexture;
 
-    Rectangle _terminalInfo = { 200, 200, 48, 48 };
+    Rectangle _terminalInfo = { 200, 200, 120, 120 };
     Rectangle _starMapInfo = { 600, 400, 128, 64 };
 
 public: 

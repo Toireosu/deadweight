@@ -6,7 +6,7 @@
 #include "raymath.h"
 
 class Renderable3D : public RenderableBase {
-private:
+protected:
     Model* _model;
 public:
     Renderable3D(Model* model) {
