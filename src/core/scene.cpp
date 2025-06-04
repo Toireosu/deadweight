@@ -35,5 +35,5 @@ void Scene::destroy(Updatable* updatable) {
 
 void Scene::updateAll() {
     for (auto updatable : std::list(_updatables))
-        updatable->update();
+        updatable->runUpdate();
 }

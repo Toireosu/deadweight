@@ -34,7 +34,7 @@ public:
 class StarMapView : public RenderableUI {
 private:
     std::vector<StarMapWorld> _worlds; 
-    World* _hoveredWorld;
+    World* _hoveredWorld = nullptr;
     RenderTexture _preRenderTexture;
     Font* _font;
     const float _worldLabelspacing = 0.8f;
@@ -134,7 +134,7 @@ public:
         
         _hoveredWorld = nullptr;
 
-        return false;
+        return true;
     }
 
     virtual void render() override {

@@ -9,7 +9,7 @@
 #include "core/loaders.hpp"
 #include "data/world_map.hpp"
 #include "ui/star_map_view.hpp"
-#include "systems/cockpit_controller.hpp"
+#include "ui/cockpit_view.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -45,14 +45,14 @@ void App::run() {
     scene->spawn(terminal);
 
     auto view = new TerminalView(terminal, 640, 480);
+    auto starMapView = new StarMapView(480);
+    
+    auto cockpitView = new CockpitView(starMapView, view);
+    scene->spawn(cockpitView);
+    
     scene->spawn(view);
 
-    auto starMapView = new StarMapView(480);
     scene->spawn(starMapView);
-
-    auto cockpitController = new CockpitController(starMapView, view);
-    scene->spawn(cockpitController);
-
     while(!WindowShouldClose()) {
         if (IsWindowResized())
             Renderer::calculateRatio(GetScreenWidth(), GetScreenHeight());
@@ -63,7 +63,7 @@ void App::run() {
 
         auto ui = SceneHandler::getCurrent()->getRenderStack()->getOrthographic();
         for (auto it = ui.rbegin(); it != ui.rend(); it++)
-            if ((*it)->handleMouse(mousePos, false, false))
+            if ((*it)->runHandleMouse(mousePos, IsMouseButtonPressed(MOUSE_LEFT_BUTTON), IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)))
                 break; // handled
 
 

@@ -26,6 +26,12 @@ public:
         return false;
     }
 
+    bool runHandleMouse(Vector2 coords, bool left, bool right) {
+        if (_shouldUpdate || !_hidden)
+            return handleMouse(coords, left, right);
+        return false;
+    }
+
     virtual void render() override {
         // DrawTexturePro(*_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale }, {0.0f, 0.0f}, 0.0f, WHITE);
         renderOne(_texture, _textureRect, {0, 0, _textureRect.width * _scale, _textureRect.height * _scale });

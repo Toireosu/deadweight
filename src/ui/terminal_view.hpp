@@ -145,6 +145,10 @@ public:
         appendInput(c, false);
     }
 
+    void update() override {
+        takeInput();
+    }
+
     void render() override {
         RenderableUI::render();
 
@@ -160,5 +164,9 @@ public:
             writeLine((_inputStream.str() + "_"), false);
         else
             writeLine((_inputStream.str()), false);
+    }
+
+    bool handleMouse(Vector2 coord, bool left, bool right) {
+        return true;
     }
 };
