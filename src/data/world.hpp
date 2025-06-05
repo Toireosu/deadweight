@@ -4,6 +4,10 @@
 #include "data/faction.hpp"
 #include "data/space_coords.hpp"
 
+#include <vector>
+#include <memory>
+
+class Job;
 class World {
 protected:
     std::string _name;
@@ -23,4 +27,6 @@ public:
     SpaceCoords getCoords() { return _coords; }
 
     virtual std::string scan() = 0;
+
+    std::vector<std::shared_ptr<Job>> fetchJobs();
 };

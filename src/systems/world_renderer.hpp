@@ -9,9 +9,13 @@ private:
     Color _color;
     Vector3 _worldPosition;
     Texture* _texture;
+    Model* _sky;
 public:
     WorldRenderer() : Renderable3D(nullptr) 
-    { }
+    { 
+        _sky = new Model(LoadModelFromMesh(GenMeshHemiSphere(5.0f, 16, 16)));
+        _sky->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *Loaders::Texture.get("assets/textures/world_background.png");
+    }
 
     void onPlayerMoved(SpaceCoords coords) override {
         delete _model;
@@ -34,6 +38,7 @@ public:
     }
 
     void render() override {
+        DrawModelEx(*_sky, {0, -5, 0}, {0, 0, 0}, 0.0f, {1, 1, 1}, WHITE);
         if (_model) {
             DrawModelEx(*_model, _worldPosition, {0, 1, 0},  GetTime() * 0.05f, {1, 1, 1}, _color);
         }

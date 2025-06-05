@@ -1,6 +1,7 @@
 #pragma once
 
 #include "systems/terminal.hpp"
+#include "data/job.hpp"
 
 class TerminalCommands {
 public:
@@ -137,5 +138,27 @@ public:
         };
         
         return _commandList;
+    }
+
+    static std::list<std::string> joblist(Terminal& terminal, std::vector<std::string> parameters) {
+        if (parameters.size() != 0)
+            throw IncorrectTerminalInputError("Too many parameters for command 'jobs'");
+        
+        auto world = WorldMap::getWorldByCoords(terminal.getVessel()->getCoords());
+        std::list<std::string> ret;
+
+        if (world == nullptr) {
+            ret.push_back("Timeout: Couldn't reach jobs server...");
+            return ret;
+        }
+        
+        auto jobs = world->fetchJobs();
+
+        int i = 0;
+        for (auto job : jobs) {
+            ret.push_back((std::stringstream() << i << ": " << job->getName()).str());
+        }
+        
+        return ret;
     }
 };

@@ -8,5 +8,6 @@ void Terminal::initCommands() {
     _commands["COMMS"] = TerminalCommands::comms;
     _commands["BALANCE"] = TerminalCommands::balance;
     _commands["HELP"] = TerminalCommands::help;
+    _commands["JOBLIST"] = TerminalCommands::joblist;
     _commands["STORAGE"] = TerminalCommands::storage;
 }
