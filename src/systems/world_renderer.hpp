@@ -35,7 +35,7 @@ public:
 
     void render() override {
         if (_model) {
-            DrawModel(*_model, _worldPosition, 1.0f, _color);
+            DrawModelEx(*_model, _worldPosition, {0, 1, 0},  GetTime() * 0.05f, {1, 1, 1}, _color);
         }
     }
 };
