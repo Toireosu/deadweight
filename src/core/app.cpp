@@ -43,6 +43,9 @@ void App::run() {
     SceneHandler::switchScene(scene);
 
     auto playerVessel = new PlayerVessel(SpaceCoords(230, 450));
+    playerVessel->addStorable(new Storable(StorableType::ORE, "Tungsten", WorldMap::getWorldByName("Valesh"), 400.0f));
+    playerVessel->addStorable(new Storable(StorableType::GRAIN, "Rye", WorldMap::getWorldByName("Valesh"), 50.0f));
+    playerVessel->addStorable(new Storable(StorableType::CHEMICALS, "Jet", WorldMap::getWorldByName("Valesh"), 12.0f));
 
     auto worldRenderer = new WorldRenderer();
     playerVessel->addListener(worldRenderer);

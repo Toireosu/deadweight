@@ -2,11 +2,12 @@
 
 #include "data/space_coords.hpp"
 #include "systems/player_vessel_moved_listener.hpp"
+#include "data/storable.hpp"
 #include <list>
 
 class PlayerVessel {
     SpaceCoords _coords;
-    std::list<int> _storage; 
+    std::list<Storable*> _storage; 
     std::list<PlayerVesselMovedListener*> _listeners;
 public: 
     PlayerVessel(SpaceCoords coords) {
@@ -28,4 +29,10 @@ public:
     void addListener(PlayerVesselMovedListener* listener) {
         _listeners.push_front(listener);
     }
+    
+    std::list<Storable*> getStorage() { return _storage; }
+    void addStorable(Storable* storable) {
+        _storage.push_front(storable);
+    }
+
 };

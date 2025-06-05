@@ -4,6 +4,62 @@
 
 class TerminalCommands {
 public:
+    static std::list<std::string> storage(Terminal& terminal, std::vector<std::string> parameters) {
+        if (!parameters.empty())
+            throw IncorrectTerminalInputError("Too many parameters");
+
+        auto response = std::list<std::string>();
+
+        auto storage = terminal.getVessel()->getStorage();
+        if (storage.empty()) {
+            response.push_back("Empty");
+            return response;
+        }
+
+        
+        int nameTabSize = 4;
+        int massTabSize = 4;
+        int indexTabSize = 3;
+        for (auto storable : storage) {
+            if (storable->getName().size() > nameTabSize)
+                nameTabSize = storable->getName().size();
+            if (storable->getMass() / 10 > massTabSize)
+                massTabSize = storable->getMass() / 10; 
+        }
+
+        auto tabFunc = [](std::string in, int size)->std::string {
+            std::stringstream ss;
+            ss << in;
+            
+            for (int i = in.size(); i < size; i++)
+                ss << " ";
+
+            return ss.str();
+        };
+
+        std::string breakStr = " | ";
+
+        std::stringstream ss;
+        ss << tabFunc("NUM", indexTabSize) << breakStr;
+        ss << tabFunc("NAME", nameTabSize) << breakStr;
+        ss << tabFunc("MASS", massTabSize);
+
+        response.push_back(ss.str());
+
+        int i = 0;
+        for (auto storable : storage) {
+            std::stringstream ss;
+            ss << tabFunc(std::to_string(i), indexTabSize) << breakStr;
+            ss << tabFunc(storable->getName(), nameTabSize) << breakStr;
+            ss << tabFunc((std::stringstream() << storable->getMass() << "kg").str(), massTabSize);
+
+            response.push_back(ss.str());
+            i++;
+        }
+
+        return response;
+    }
+
     static std::list<std::string> jump(Terminal& terminal, std::vector<std::string> parameters) {
         if (parameters.empty())
             throw IncorrectTerminalInputError("Missing parameters");
