@@ -13,7 +13,7 @@ private:
 public:
     WorldRenderer() : Renderable3D(nullptr) 
     { 
-        _sky = new Model(LoadModelFromMesh(GenMeshHemiSphere(5.0f, 16, 16)));
+        _sky = new Model(LoadModelFromMesh(GenMeshPlane(854.0f, 640.0f, 1, 1)));
         _sky->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *Loaders::Texture.get("assets/textures/world_background.png");
     }
 
@@ -32,13 +32,13 @@ public:
         auto size = planet->getDiameter() / 2 * 10.0f;
         _model = new Model(LoadModelFromMesh(GenMeshSphere(size, 16, 16)));
         _color = planet->getColor();
-        _worldPosition = { distance, 0, -distance * 3 };
+        _worldPosition = { distance, -distance * 3, 0 };
         _texture = planet->getTexture();
         _model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *_texture;
     }
 
     void render() override {
-        DrawModelEx(*_sky, {0, -5, 0}, {0, 0, 0}, 0.0f, {1, 1, 1}, WHITE);
+        DrawModelEx(*_sky, {0, -500, 0}, {0, 0, 0}, 0.0f, {1, 1, 1}, WHITE);
         if (_model) {
             DrawModelEx(*_model, _worldPosition, {0, 1, 0},  GetTime() * 0.05f, {1, 1, 1}, _color);
         }

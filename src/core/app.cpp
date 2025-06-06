@@ -36,7 +36,8 @@ void App::run() {
     Model model = LoadModelFromMesh(GenMeshSphere(1.0f, 8, 8));
     Renderable3D r3d(&model);
     
-    Camera c3d = { { 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 45.0f, 0 };
+    // Up = Z
+    Camera c3d = { { 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, 45.0f, 0 };
     Renderer::setCamera(&c3d);
 
     Scene* scene = new Scene();
