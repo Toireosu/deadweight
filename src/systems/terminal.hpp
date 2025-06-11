@@ -10,7 +10,7 @@
 
 #include "core/updatable.hpp"
 #include "data/world_map.hpp"
-#include "data/player_vessel.hpp"
+#include "data/game_state_info.hpp"
 
 class Terminal;
 typedef std::function<std::list<std::string>(Terminal&, std::vector<std::string>)> TerminalCommandPointer;
@@ -43,7 +43,7 @@ private:
     std::list<std::string> _output;
     std::string _greetingMessage = "TTerminal Quatro Version 4.12";
     bool _wasError = false;
-    PlayerVessel* _vessel;
+    GameStateInfo* _gsi;
     
     // Moves current input as first input in _inputs list
     void addToInputs(std::string input) {
@@ -67,15 +67,15 @@ private:
 
     void initCommands();
 public:
-    Terminal(PlayerVessel* vessel) {
-        _vessel = vessel;
+    Terminal(GameStateInfo* gsi) {
+        _gsi = gsi;
         initCommands();
 
         for (int i = 0; i < _inputs.size(); i++)
             _inputs[i] = "";
     } 
 
-    PlayerVessel* getVessel() { return _vessel; }
+    GameStateInfo* getGSI() { return _gsi; }
 
     void handleInput(std::string input) {
         if (input.empty())

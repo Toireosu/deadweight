@@ -13,6 +13,7 @@ protected:
     std::string _name;
     Faction* _faction; 
     SpaceCoords _coords;
+    std::vector<std::shared_ptr<Job>> _jobs;
 public:
 
     World(std::string name, Faction* faction, SpaceCoords coords) {
@@ -29,4 +30,5 @@ public:
     virtual std::string scan() = 0;
 
     std::vector<std::shared_ptr<Job>> fetchJobs();
+    void addJob(std::shared_ptr<Job>);
 };

@@ -157,7 +157,7 @@ public:
         writeLine(_terminal->getGreetingMessage(), false);
         if (!_terminal->getOutput().empty()) {
             for (auto line : _terminal->getOutput())
-            writeLine(line, _terminal->getWasError());
+                writeLine(line, _terminal->getWasError());
         }
 
         if (int(GetTime() * 2) % 2)

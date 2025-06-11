@@ -15,12 +15,18 @@ public:
 
     static void add(World* world) {
         // Make sure name and coordinates are unique
+        _internal.push_back(world);
     }
 
+    static void populateJobs();
+
     static void init() {
-        _internal.push_back(new Planet("Peronie", Factions::Union, SpaceCoords(100, 120), "Capital of the Union.", 12000000000U, 23.0f, BLUE));
-        _internal.push_back(new Planet("Valesh", Factions::Confederacy, SpaceCoords(800, 600), "Home planet of the Confederacy.", 700000000U, 46.0f, RED));
-        _internal.push_back(new Planet("Sarakiel", Factions::Syndicates, SpaceCoords(700, 230), "Mining planet.", 8000000U, 17.0f, ORANGE));
+        add(new Planet("Peronie", Factions::Union, SpaceCoords(100, 120), "Capital of the Union.", 12000000000U, 23.0f, BLUE));
+        add(new Planet("Valesh", Factions::Confederacy, SpaceCoords(800, 600), "Home planet of the Confederacy.", 700000000U, 46.0f, RED));
+        add(new Planet("Vera", Factions::Confederacy, SpaceCoords(750, 700), "Moon of Valesh", 8000U, 9.0f, GRAY));
+        add(new Planet("Sarakiel", Factions::Syndicates, SpaceCoords(700, 230), "Mining planet.", 8000000U, 17.0f, ORANGE));
+
+        populateJobs();
     }
 
     static World* getWorldByName(std::string name) {

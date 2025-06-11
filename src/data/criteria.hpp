@@ -2,5 +2,5 @@
 
 class Criteria {
 public:
-    bool completed() { return true; }
+    virtual bool completed(SpaceCoords msg) = 0;
 };

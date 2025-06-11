@@ -3,6 +3,10 @@
 #include "systems/terminal.hpp"
 #include "data/job.hpp"
 
+#include "data/player_info.hpp"
+#include "data/player_vessel.hpp"
+#include "systems/job_handler.hpp"
+
 class TerminalCommands {
 public:
     static std::list<std::string> storage(Terminal& terminal, std::vector<std::string> parameters) {
@@ -11,7 +15,7 @@ public:
 
         auto response = std::list<std::string>();
 
-        auto storage = terminal.getVessel()->getStorage();
+        auto storage = terminal.getGSI()->getPlayerVessel()->getStorage();
         if (storage.empty()) {
             response.push_back("Empty");
             return response;
@@ -72,7 +76,7 @@ public:
                 throw IncorrectTerminalInputError((std::stringstream() << parameters[0] << " is not a known world.").str());
             }
 
-            terminal.getVessel()->jump(world->getCoords());
+            terminal.getGSI()->getPlayerVessel()->jump(world->getCoords());
             return std::list<std::string> { (std::stringstream() << "Initiating jump to " << world->getName()).str() };
         }
         if (parameters.size() == 2) {
@@ -81,7 +85,7 @@ public:
                 unsigned short x = std::stoi(parameters.at(0));
                 unsigned short y = std::stoi(parameters.at(1));
 
-                terminal.getVessel()->jump(SpaceCoords(x, y));
+                terminal.getGSI()->getPlayerVessel()->jump(SpaceCoords(x, y));
                 return std::list<std::string> { (std::stringstream() << "Initiating jump to " << x << " " << y).str() };
             }
             catch (std::exception e) {
@@ -111,13 +115,6 @@ public:
         throw IncorrectTerminalInputError("Too many parameters");
     }    
 
-    static std::list<std::string> transact(Terminal& terminal, std::vector<std::string> parameters) {
-        if (parameters.empty())
-            throw IncorrectTerminalInputError("Missing parameters");
-
-        return std::list<std::string> { (std::stringstream() << "Accepted job " << parameters[0]).str() };
-    }
-
     static std::list<std::string> comms(Terminal& terminal, std::vector<std::string> parameters) {
         if (parameters.empty())
             throw IncorrectTerminalInputError("Missing parameters");
@@ -140,25 +137,89 @@ public:
         return _commandList;
     }
 
-    static std::list<std::string> joblist(Terminal& terminal, std::vector<std::string> parameters) {
-        if (parameters.size() != 0)
-            throw IncorrectTerminalInputError("Too many parameters for command 'jobs'");
-        
-        auto world = WorldMap::getWorldByCoords(terminal.getVessel()->getCoords());
-        std::list<std::string> ret;
+    // Jobs
 
-        if (world == nullptr) {
-            ret.push_back("Timeout: Couldn't reach jobs server...");
+    class Jobs {
+    private:
+        static std::vector<std::shared_ptr<Job>> getJobs(Terminal& terminal) {
+            auto world = WorldMap::getWorldByCoords(terminal.getGSI()->getPlayerVessel()->getCoords());
+    
+            if (world == nullptr) {
+                throw IncorrectTerminalInputError("Timeout: Couldn't reach jobs server...");
+            }
+
+            return world->fetchJobs();
+        }
+
+        static std::shared_ptr<Job> getJobByIndex(Terminal& terminal, int index) {
+            auto jobs = getJobs(terminal);
+            
+            if (index >= jobs.size())
+                throw IncorrectTerminalInputError("Out of bounds");
+
+            return jobs.at(index);
+        }
+
+
+    public: 
+        static std::list<std::string> list(Terminal& terminal, std::vector<std::string> parameters) {
+            if (parameters.size() != 0)
+                throw IncorrectTerminalInputError("Too many parameters for command 'joblist'");
+            
+            auto jobs = getJobs(terminal); 
+            std::list<std::string> ret;
+    
+            int i = 0;
+            for (auto job : jobs) {
+                ret.push_back((std::stringstream() << i << ": " << job->getName()).str());
+            }
+    
             return ret;
         }
-        
-        auto jobs = world->fetchJobs();
-
-        int i = 0;
-        for (auto job : jobs) {
-            ret.push_back((std::stringstream() << i << ": " << job->getName()).str());
+    
+        static std::list<std::string> info(Terminal& terminal, std::vector<std::string> parameters) {
+            if (parameters.size() != 1)
+                throw IncorrectTerminalInputError("Too many parameters for command 'jobinfo'");
+            
+            std::list<std::string> ret;
+            
+            int index = 0;
+            try {
+                index = std::stoi(parameters.front());
+            }
+            catch (std::exception e) {
+                throw IncorrectTerminalInputError("Parameter not a number");
+            }
+    
+            return { getJobByIndex(terminal, index)->getDescription() };
         }
-        
-        return ret;
-    }
+
+        static std::list<std::string> transact(Terminal& terminal, std::vector<std::string> parameters) {
+            if (parameters.empty())
+                throw IncorrectTerminalInputError("Missing parameters");
+
+            int index = 0;
+            try {
+                index = std::stoi(parameters.front());
+            }
+            catch (std::exception e) {
+                throw IncorrectTerminalInputError("Parameter not a number");
+            }
+
+            auto transactJob = getJobByIndex(terminal, index);
+
+            terminal.getGSI()->getJobHandler()->addJob(transactJob);
+
+            std::list<std::string> ret;
+            ret.push_back((std::stringstream() << "Transcated job: " << transactJob->getName()).str());
+
+            auto jobs = terminal.getGSI()->getJobHandler()->getJobs();
+            ret.push_back("Current jobs:");
+
+            for (auto job : jobs)
+                ret.push_back(job->getName());
+
+            return ret;
+        }
+    };
 };

@@ -11,6 +11,9 @@
 #include "ui/star_map_view.hpp"
 #include "ui/cockpit_view.hpp"
 #include "systems/world_renderer.hpp"
+#include "data/game_state_info.hpp"
+#include "data/player_info.hpp"
+#include "systems/job_handler.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -52,9 +55,16 @@ void App::run() {
     playerVessel->addListener(worldRenderer);
     scene->spawn(worldRenderer);
 
-    playerVessel->hasMovedCoords();
+    auto jobHandler = new JobHandler();
 
-    auto terminal = new Terminal(playerVessel);
+    playerVessel->hasMovedCoords();
+    playerVessel->addListener(jobHandler);
+
+    auto playerInfo = new PlayerInfo();
+
+    auto gsi = new GameStateInfo(playerInfo, playerVessel, jobHandler);
+
+    auto terminal = new Terminal(gsi);
     scene->spawn(terminal);
 
     auto view = new TerminalView(terminal, 640, 480);
@@ -81,6 +91,9 @@ void App::run() {
 
 
         // view->takeInput();
+
+        c3d.position.x += 0.1f * sinf(GetTime()) * GetFrameTime();
+        c3d.position.z += 0.1f * cosf(GetTime() * 3.2f) * GetFrameTime();
 
         Renderer::render(*SceneHandler::getCurrent()->getRenderStack());
     }
