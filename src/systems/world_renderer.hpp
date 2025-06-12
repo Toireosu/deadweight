@@ -3,6 +3,8 @@
 #include "core/renderable_3D.hpp"
 #include "systems/player_vessel_moved_listener.hpp"
 #include "data/world_map.hpp"
+#include "core/loaders.hpp"
+#include <stdexcept>
 
 class WorldRenderer : public Renderable3D, public PlayerVesselMovedListener {
 private:
@@ -10,11 +12,21 @@ private:
     Vector3 _worldPosition;
     Texture* _texture;
     Model* _sky;
+    Music* _cockpitSounds;
+    Shader _planetShader;
 public:
     WorldRenderer() : Renderable3D(nullptr) 
     { 
         _sky = new Model(LoadModelFromMesh(GenMeshPlane(854.0f, 640.0f, 1, 1)));
         _sky->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *Loaders::Texture.get("assets/textures/world_background.png");
+        _cockpitSounds = Loaders::Music.get("assets/audio/music/cockpit_interior.wav");
+        PlayMusicStream(*_cockpitSounds); 
+
+        _planetShader = LoadShader("assets/shaders/light.vs", "assets/shaders/light.fs");
+    }
+
+    void update() override {
+        UpdateMusicStream(*_cockpitSounds);
     }
 
     void onPlayerMoved(SpaceCoords coords) override {
@@ -35,6 +47,7 @@ public:
         _worldPosition = { distance, -distance * 3, 0 };
         _texture = planet->getTexture();
         _model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = *_texture;
+        _model->materials[0].shader = _planetShader;
     }
 
     void render() override {
